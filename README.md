@@ -1,4 +1,4 @@
-epic-ninja-fury
-===============
+pixi-basic-template
+===================
 
-A web game written in PIXI.js
+Basic Game Template written in PixiJS
