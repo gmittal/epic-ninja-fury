@@ -1,3 +1,5 @@
+var db = new Firebase('https://realtime-experiment0.firebaseio.com/');
+
 
 // create an new instance of a pixi stage
 var stage = new PIXI.Stage(0x2c3e50);
@@ -34,10 +36,10 @@ var specialKeys = {
 
 requestAnimFrame( animate );
 
-var mines = [];
+var otherPlayers = {};
 
 // create a texture from an image path
-var bunnyTexture = PIXI.Texture.fromImage("media/Ogrecube@4x.png");
+var bunnyTexture = PIXI.Texture.fromImage("media/character-pixel-platform/Platformer-Pixel159.png");
 // create a new Sprite using the texture
 var bunny = new PIXI.Sprite(bunnyTexture);
 
@@ -61,28 +63,28 @@ stage.addChild(bunny);
 // bunny.scale = 0.5;
 
 // create a texture from an image path
-var gloveTexture = PIXI.Texture.fromImage("glove.png");
-// create a new Sprite using the texture
-var glove = new PIXI.Sprite(gloveTexture);
-glove.scale.x = 0.4;
-glove.scale.y = -0.4;
+// var gloveTexture = PIXI.Texture.fromImage("glove.png");
+// // create a new Sprite using the texture
+// var glove = new PIXI.Sprite(gloveTexture);
+// glove.scale.x = 0.4;
+// glove.scale.y = -0.4;
 
-// center the sprites anchor point
-glove.anchor.x = 0.5;
-glove.anchor.y = 0.5;
+// // center the sprites anchor point
+// glove.anchor.x = 0.5;
+// glove.anchor.y = 0.5;
 
-glove.rotation = 270*(Math.PI/180);
+// glove.rotation = 270*(Math.PI/180);
 
-// move the sprite t the center of the screen
-glove.position.x = bunny.width/2 + 20;
-glove.position.y = bunny.height/2;
+// // move the sprite t the center of the screen
+// glove.position.x = bunny.width/2 + 20;
+// glove.position.y = bunny.height/2;
 
 // bunny.addChild(glove);
 
 // setInterval(handleMineDrop, 10);
 
 
-var timeSinceLastMine = 0;
+// var timeSinceLastMine = 0;
 
 
 // Update function
@@ -92,7 +94,7 @@ function animate() {
 
     // bunny.rotation = 0.785398163;
 
-    var speed = 5;
+    var speed = 10;
     var rotationSpeed = 0.1;
 
     if (arrowKeys.left == true || arrowKeys.a == true) {
@@ -151,71 +153,34 @@ function animate() {
     }
 
 
-    // just for fun, lets rotate mr rabbit a little
-    // bunny.rotation += 0.4;
-    
 
-    // console.log()
-    if (timeSinceLastMine >= 4) {
-    	timeSinceLastMine = 4;
-    } else {
-    	timeSinceLastMine++;
+	var yourPlayerData = {
+		'id': connectionID,
+		'position': bunny.position
+	};
+
+    db.child(connectionValues.key()).set(yourPlayerData);
+
+
+    for (key in otherPlayers) {
+    	var tmp = otherPlayers[key];
+    	db.child(key).on('value', function (snapshot) {
+    		tmp.position = snapshot.val().position;
+    		console.log(snapshot.val().position);
+    	});
     }
 
-
-	if (specialKeys.space == true) {
-		if (timeSinceLastMine == 4) {
-	    	dropMine();
-	    	timeSinceLastMine = 0;
-	    }
-    }
-
-
-    if (specialKeys.q == true) {
-    	detonateMines();
-    }
-    
-    
-
- 
 
     // render the stage   
     renderer.render(stage);
-    // console.log(bunny.position);
+
+
+
+
+    
 }
 
 
-
-function dropMine() {
-	var mine = new PIXI.Sprite(PIXI.Texture.fromImage("bullet.png"));
-	var x = bunny.position.x;
-	// console.log(x);
-	var y = bunny.position.y
-
-	mine.position.x = x;
-	mine.position.y = y;
-	stage.addChild(mine);
-
-	mines.push(mine);
-
-}
-
-function detonateMines() {
-	if (mines.length > 0) {
-		for (var i = 0; i < mines.length; i++) {
-			var sprite = mines[i];
-
-			// for (var i = 0; i < 100; i++) {
-				// var j = 100 - i;
-				// sprite.alpha = j;
-			// }
-
-			stage.removeChild(sprite);
-			mines.remove(sprite);
-			// stage.removeChild(sprite);
-		}
-	}
-}
 
 
 Array.prototype.remove = function() {
@@ -410,4 +375,138 @@ $(document).keyup(function (evt) {
 	}
 
 });
+
+
+function numberOfPlayers() {
+
+}
+
+
+// backend server-side communications
+
+var connectionID = 0;
+var connectionValues = {};
+
+var disconnectDB = {};
+
+
+db.once('value', function (snapshot) {
+	var numPlayers = 0;
+	snapshot.forEach(function (data) {
+		// console.log(data.key());
+		numPlayers++;
+
+
+
+	});
+
+	console.log('Number of players before you entered: ' + numPlayers);
+
+	connectionID = numPlayers;
+
+	var newPlayer = {
+		'id': numPlayers,
+		'position': bunny.position
+	};
+
+	connectionValues = db.push(newPlayer)
+	// db.push.name();
+	disconnectDB = new Firebase('https://realtime-experiment0.firebaseio.com/' + connectionValues.key());
+
+	// delete player if they leave the game...
+	disconnectDB.onDisconnect().remove();
+
+
+	snapshot.forEach(function (data) {
+		if (data.key() != connectionValues.key()) {
+			console.log('Yo, I am new to this area.');
+			console.log(data.key());
+
+
+			var bunnyTexture = PIXI.Texture.fromImage("media/character-pixel-platform/Platformer-Pixel159.png");
+		// create a new Sprite using the texture
+			var bunnyTmp = new PIXI.Sprite(bunnyTexture);
+
+			// center the sprites anchor point
+			bunnyTmp.anchor.x = 0.5;
+			bunnyTmp.anchor.y = 0.5;
+
+			bunnyTmp.scale = {
+				x: 0.6,
+				y: 0.6
+			};
+
+			// bunny.scale = 0.2;
+			// ;
+			// move the sprite t the center of the screen
+			bunnyTmp.position.x = data.val().position.x;
+			bunnyTmp.position.y = data.val().position.y;
+
+			otherPlayers[data.key()] = bunnyTmp;
+			stage.addChild(bunnyTmp);
+
+		}
+	});
+
+
+
+});
+
+
+db.on('child_added', function (snapshot) {
+	if (snapshot.key() != connectionValues.key()) {
+			console.log('Yo, I am new to this area.');
+			console.log(snapshot.key());
+
+
+			var bunnyTexture = PIXI.Texture.fromImage("media/character-pixel-platform/Platformer-Pixel159.png");
+		// create a new Sprite using the texture
+			var bunnyTmp = new PIXI.Sprite(bunnyTexture);
+
+			// center the sprites anchor point
+			bunnyTmp.anchor.x = 0.5;
+			bunnyTmp.anchor.y = 0.5;
+
+			bunnyTmp.scale = {
+				x: 0.6,
+				y: 0.6
+			};
+
+			// bunny.scale = 0.2;
+			// ;
+			// move the sprite t the center of the screen
+			bunnyTmp.position.x = snapshot.val().position.x;
+			bunnyTmp.position.y = snapshot.val().position.y;
+
+			otherPlayers[snapshot.key()] = bunnyTmp;
+			stage.addChild(bunnyTmp);
+
+	}
+
+
+});
+
+db.on('child_removed', function (snapshot) {
+	console.log("Someone disconnected!!!");
+	for (var key in otherPlayers) {
+		var tmp = otherPlayers[key];
+		if (snapshot.key() == key) {
+			delete otherPlayers[key];
+			// otherPlayers[key] = null;
+			stage.removeChild(tmp);
+		}
+	}
+
+});
+
+
+
+
+
+
+
+
+
+
+
 
