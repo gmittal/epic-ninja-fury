@@ -114,7 +114,8 @@ function animate() {
     var rotationSpeed = 0.1;
 
     if (arrowKeys.left == true || arrowKeys.a == true) {
-    	bunny.rotation -= rotationSpeed;
+    	bunny.position.x -= speed;
+    	// bunny.rotation -= rotationSpeed;
 
     	// bunny.rotation += 0.785398163; 
 
@@ -122,31 +123,33 @@ function animate() {
     }
 
     if (arrowKeys.right == true || arrowKeys.d == true) {
-    	bunny.rotation += rotationSpeed;
+    	bunny.position.x += speed;
+    	// bunny.rotation += rotationSpeed;
     	// bunny.rotation += 0.785398163; 
     }
 
     if (arrowKeys.up == true || arrowKeys.w == true) {
-    	// bunny.position.y -= speed;
 
-    	var returnedPoint = generatePointByAngle(normalizeRotation(bunny.rotation)+270, speed, bunny.position);
+    	bunny.position.y -= speed;
+
+    	// var returnedPoint = generatePointByAngle(normalizeRotation(bunny.rotation)+270, speed, bunny.position);
     	// console.log(returnedPoint);
 
-    	bunny.position.x = returnedPoint.x;
-    	bunny.position.y = returnedPoint.y;
+    	// bunny.position.x = returnedPoint.x;
+    	// bunny.position.y = returnedPoint.y;
 
 
     }
 
     if (arrowKeys.down == true || arrowKeys.s == true) {
-    	// bunny.position.y += speed;
+    	bunny.position.y += speed;
 
 
-        var returnedPoint = generatePointByAngle(normalizeRotation(bunny.rotation)+270, speed*(-1), bunny.position);
-    	// console.log(returnedPoint);
+     //    var returnedPoint = generatePointByAngle(normalizeRotation(bunny.rotation)+270, speed*(-1), bunny.position);
+    	// // console.log(returnedPoint);
 
-    	bunny.position.x = returnedPoint.x;
-    	bunny.position.y = returnedPoint.y;
+    	// bunny.position.x = returnedPoint.x;
+    	// bunny.position.y = returnedPoint.y;
     }
 
 
