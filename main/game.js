@@ -1,4 +1,4 @@
-var db = new Firebase('https://realtime-experiment0.firebaseio.com/');
+// var db = new Firebase('https://realtime-experiment0.firebaseio.com/');
 
 
 // create an new instance of a pixi stage
@@ -37,6 +37,22 @@ var specialKeys = {
 requestAnimFrame( animate );
 
 var otherPlayers = {};
+
+
+var bgTexture = PIXI.Texture.fromImage("media/bg/shrooms-04@4x.png");
+var bg = new PIXI.Sprite(bgTexture);
+bg.anchor.x = 0.5;
+bg.anchor.y = 0.5;
+
+bg.scale = {
+	x: 0.5,
+	y:0.5
+};
+
+bg.position.x = stageProperties.width/2;
+bg.position.y = stageProperties.height/2;
+
+stage.addChild(bg);
 
 // create a texture from an image path
 var bunnyTexture = PIXI.Texture.fromImage("media/character-pixel-platform/Platformer-Pixel159.png");
@@ -154,21 +170,21 @@ function animate() {
 
 
 
-	var yourPlayerData = {
-		'id': connectionID,
-		'position': bunny.position
-	};
+	// var yourPlayerData = {
+	// 	'id': connectionID,
+	// 	'position': bunny.position
+	// };
 
-    db.child(connectionValues.key()).set(yourPlayerData);
+ //    db.child(connectionValues.key()).set(yourPlayerData);
 
 
-    for (key in otherPlayers) {
-    	var tmp = otherPlayers[key];
-    	db.child(key).on('value', function (snapshot) {
-    		tmp.position = snapshot.val().position;
-    		console.log(snapshot.val().position);
-    	});
-    }
+ //    for (key in otherPlayers) {
+ //    	var tmp = otherPlayers[key];
+ //    	db.child(key).on('value', function (snapshot) {
+ //    		tmp.position = snapshot.val().position;
+ //    		console.log(snapshot.val().position);
+ //    	});
+ //    }
 
 
     // render the stage   
@@ -384,120 +400,120 @@ function numberOfPlayers() {
 
 // backend server-side communications
 
-var connectionID = 0;
-var connectionValues = {};
+// var connectionID = 0;
+// var connectionValues = {};
 
-var disconnectDB = {};
-
-
-db.once('value', function (snapshot) {
-	var numPlayers = 0;
-	snapshot.forEach(function (data) {
-		// console.log(data.key());
-		numPlayers++;
+// var disconnectDB = {};
 
 
-
-	});
-
-	console.log('Number of players before you entered: ' + numPlayers);
-
-	connectionID = numPlayers;
-
-	var newPlayer = {
-		'id': numPlayers,
-		'position': bunny.position
-	};
-
-	connectionValues = db.push(newPlayer)
-	// db.push.name();
-	disconnectDB = new Firebase('https://realtime-experiment0.firebaseio.com/' + connectionValues.key());
-
-	// delete player if they leave the game...
-	disconnectDB.onDisconnect().remove();
-
-
-	snapshot.forEach(function (data) {
-		if (data.key() != connectionValues.key()) {
-			console.log('Yo, I am new to this area.');
-			console.log(data.key());
-
-
-			var bunnyTexture = PIXI.Texture.fromImage("media/character-pixel-platform/Platformer-Pixel159.png");
-		// create a new Sprite using the texture
-			var bunnyTmp = new PIXI.Sprite(bunnyTexture);
-
-			// center the sprites anchor point
-			bunnyTmp.anchor.x = 0.5;
-			bunnyTmp.anchor.y = 0.5;
-
-			bunnyTmp.scale = {
-				x: 0.6,
-				y: 0.6
-			};
-
-			// bunny.scale = 0.2;
-			// ;
-			// move the sprite t the center of the screen
-			bunnyTmp.position.x = data.val().position.x;
-			bunnyTmp.position.y = data.val().position.y;
-
-			otherPlayers[data.key()] = bunnyTmp;
-			stage.addChild(bunnyTmp);
-
-		}
-	});
+// db.once('value', function (snapshot) {
+// 	var numPlayers = 0;
+// 	snapshot.forEach(function (data) {
+// 		// console.log(data.key());
+// 		numPlayers++;
 
 
 
-});
+// 	});
+
+// 	console.log('Number of players before you entered: ' + numPlayers);
+
+// 	connectionID = numPlayers;
+
+// 	var newPlayer = {
+// 		'id': numPlayers,
+// 		'position': bunny.position
+// 	};
+
+// 	connectionValues = db.push(newPlayer)
+// 	// db.push.name();
+// 	disconnectDB = new Firebase('https://realtime-experiment0.firebaseio.com/' + connectionValues.key());
+
+// 	// delete player if they leave the game...
+// 	disconnectDB.onDisconnect().remove();
 
 
-db.on('child_added', function (snapshot) {
-	if (snapshot.key() != connectionValues.key()) {
-			console.log('Yo, I am new to this area.');
-			console.log(snapshot.key());
+// 	snapshot.forEach(function (data) {
+// 		if (data.key() != connectionValues.key()) {
+// 			console.log('Yo, I am new to this area.');
+// 			console.log(data.key());
 
 
-			var bunnyTexture = PIXI.Texture.fromImage("media/character-pixel-platform/Platformer-Pixel159.png");
-		// create a new Sprite using the texture
-			var bunnyTmp = new PIXI.Sprite(bunnyTexture);
+// 			var bunnyTexture = PIXI.Texture.fromImage("media/character-pixel-platform/Platformer-Pixel159.png");
+// 		// create a new Sprite using the texture
+// 			var bunnyTmp = new PIXI.Sprite(bunnyTexture);
 
-			// center the sprites anchor point
-			bunnyTmp.anchor.x = 0.5;
-			bunnyTmp.anchor.y = 0.5;
+// 			// center the sprites anchor point
+// 			bunnyTmp.anchor.x = 0.5;
+// 			bunnyTmp.anchor.y = 0.5;
 
-			bunnyTmp.scale = {
-				x: 0.6,
-				y: 0.6
-			};
+// 			bunnyTmp.scale = {
+// 				x: 0.6,
+// 				y: 0.6
+// 			};
 
-			// bunny.scale = 0.2;
-			// ;
-			// move the sprite t the center of the screen
-			bunnyTmp.position.x = snapshot.val().position.x;
-			bunnyTmp.position.y = snapshot.val().position.y;
+// 			// bunny.scale = 0.2;
+// 			// ;
+// 			// move the sprite t the center of the screen
+// 			bunnyTmp.position.x = data.val().position.x;
+// 			bunnyTmp.position.y = data.val().position.y;
 
-			otherPlayers[snapshot.key()] = bunnyTmp;
-			stage.addChild(bunnyTmp);
+// 			otherPlayers[data.key()] = bunnyTmp;
+// 			stage.addChild(bunnyTmp);
 
-	}
+// 		}
+// 	});
 
 
-});
 
-db.on('child_removed', function (snapshot) {
-	console.log("Someone disconnected!!!");
-	for (var key in otherPlayers) {
-		var tmp = otherPlayers[key];
-		if (snapshot.key() == key) {
-			delete otherPlayers[key];
-			// otherPlayers[key] = null;
-			stage.removeChild(tmp);
-		}
-	}
+// });
 
-});
+
+// db.on('child_added', function (snapshot) {
+// 	if (snapshot.key() != connectionValues.key()) {
+// 			console.log('Yo, I am new to this area.');
+// 			console.log(snapshot.key());
+
+
+// 			var bunnyTexture = PIXI.Texture.fromImage("media/character-pixel-platform/Platformer-Pixel159.png");
+// 		// create a new Sprite using the texture
+// 			var bunnyTmp = new PIXI.Sprite(bunnyTexture);
+
+// 			// center the sprites anchor point
+// 			bunnyTmp.anchor.x = 0.5;
+// 			bunnyTmp.anchor.y = 0.5;
+
+// 			bunnyTmp.scale = {
+// 				x: 0.6,
+// 				y: 0.6
+// 			};
+
+// 			// bunny.scale = 0.2;
+// 			// ;
+// 			// move the sprite t the center of the screen
+// 			bunnyTmp.position.x = snapshot.val().position.x;
+// 			bunnyTmp.position.y = snapshot.val().position.y;
+
+// 			otherPlayers[snapshot.key()] = bunnyTmp;
+// 			stage.addChild(bunnyTmp);
+
+// 	}
+
+
+// });
+
+// db.on('child_removed', function (snapshot) {
+// 	console.log("Someone disconnected!!!");
+// 	for (var key in otherPlayers) {
+// 		var tmp = otherPlayers[key];
+// 		if (snapshot.key() == key) {
+// 			delete otherPlayers[key];
+// 			// otherPlayers[key] = null;
+// 			stage.removeChild(tmp);
+// 		}
+// 	}
+
+// });
 
 
 
