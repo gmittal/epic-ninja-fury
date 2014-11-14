@@ -1,17 +1,17 @@
 
 // create an new instance of a pixi stage
-var stage = new PIXI.Stage(0x95a5a6);
+var stage = new PIXI.Stage(0x2c3e50);
 
 // create a renderer instance
 var stageProperties = {
-	width: 800,
-	height: 600
+	width: 1024,
+	height: 768
 }
 
 var renderer = PIXI.autoDetectRenderer(stageProperties.width, stageProperties.height);
 
 // add the renderer view element to the DOM
-document.body.appendChild(renderer.view);
+$("#gameContent").append(renderer.view);
 
 var arrowKeys = {
 	left: false,
@@ -37,7 +37,7 @@ requestAnimFrame( animate );
 var mines = [];
 
 // create a texture from an image path
-var bunnyTexture = PIXI.Texture.fromImage("battlebot.png");
+var bunnyTexture = PIXI.Texture.fromImage("media/Ogrecube@4x.png");
 // create a new Sprite using the texture
 var bunny = new PIXI.Sprite(bunnyTexture);
 
