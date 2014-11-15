@@ -110,7 +110,9 @@ function animate() {
 
     // bunny.rotation = 0.785398163;
 
-    var speed = 10;
+    var speed = 5;
+
+
     var rotationSpeed = 0.1;
 
     if (arrowKeys.left == true || arrowKeys.a == true) {
@@ -124,6 +126,7 @@ function animate() {
 
     if (arrowKeys.right == true || arrowKeys.d == true) {
     	bunny.position.x += speed;
+    	walkingAnimation();
     	// bunny.rotation += rotationSpeed;
     	// bunny.rotation += 0.785398163; 
     }
@@ -396,9 +399,34 @@ $(document).keyup(function (evt) {
 });
 
 
-function numberOfPlayers() {
+function walkingAnimation() {
+	var w1 = PIXI.Texture.fromImage("media/character-pixel-platform/Platformer-Pixel170.png");
+	var w2 = PIXI.Texture.fromImage("media/character-pixel-platform/Platformer-Pixel266.png");
+	var w3 = PIXI.Texture.fromImage("media/character-pixel-platform/Platformer-Pixel255.png")
+	
+	setTimeout(function() {
+		bunny.setTexture(w1);
+		setTimeout(function() {
+			bunny.setTexture(w2);
 
+			setTimeout(function() {
+				bunny.setTexture(w3);
+			}, 500);
+		}, 500);
+	}, 500);
+
+	
+	
 }
+
+// function walkingRightAnimation() {
+
+// }
+
+
+// function numberOfPlayers() {
+
+// }
 
 
 // backend server-side communications
