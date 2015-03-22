@@ -1,4 +1,4 @@
-Epic Ninja Fury! (TBD)
+pixi-basic-template
 ===================
 
-The name of this is to be decided. Open source web game coming soon to a browser near you.
+Basic Game Template written in PixiJS
