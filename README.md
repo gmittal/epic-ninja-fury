@@ -1,4 +1,4 @@
-pixi-basic-template
+Epic Ninja Fury
 ===================
 
-Basic Game Template written in PixiJS
+Open source web game.
