@@ -1,4 +1,4 @@
-    // You can use either PIXI.WebGLRenderer or PIXI.CanvasRenderer
+
     var view = {
         height: 600,
         width: 800
@@ -21,8 +21,6 @@
     var playerTexture = PIXI.Texture.fromImage("images/bunny.png");
     var player = new PIXI.Sprite(playerTexture);
 
- //   player.position.x = view.width/2;
- //   player.position.y = view.height/2;
 
     player.position = screenCenter;
 
@@ -36,10 +34,52 @@
 
     requestAnimationFrame(animate);
 
+    var playerDX = 5;
+    var playerDY = 5;
+
     function animate() {
+
+        player.position.x += playerDX;
+        player.position.y += playerDY;
+
+
+
         player.rotation += 0.05;
+
+
+        // bounce off the walls
+        if (player.position.x < 0) {
+
+            playerDX *= -1; 
+
+        } else if (player.position.x > view.width) {
+            playerDX *= -1;
+   
+
+        } else if (player.position.y < 0) {
+     
+            playerDY *= -1;
+
+        } else if (player.position.y > view.height) {
+         
+            playerDY *= -1;
+        }
 
         renderer.render(stage);
 
         requestAnimationFrame(animate);
     }
+
+
+
+    // generate a random unique ID string value
+    function guid() {
+      function s4() {
+        return Math.floor((1 + Math.random()) * 0x10000)
+          .toString(16)
+          .substring(1);
+      }
+      return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+        s4() + '-' + s4() + s4() + s4();
+    }
+
