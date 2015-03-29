@@ -35,7 +35,7 @@
 
     requestAnimationFrame(animate);
 
-
+    var timeElapsed = 0;
 
     // create the CPU-generated objects to avoid
     createCPUObjects(10);
@@ -133,8 +133,10 @@
 
         var distance = Math.sqrt((sprite2.position.x - sprite1.position.x)*(sprite2.position.x - sprite1.position.x) + (sprite2.position.y - sprite1.position.y)*(sprite2.position.y - sprite1.position.y));
 
-        if (distance < r1 + r2) {
-            $(".playerStats").text("You got hit!");
+        if (distance < r1 + r2 - 2) {
+            // timer.invalidate();
+            clearInterval(timer);
+            throw e;
         }
 
     }
@@ -157,3 +159,18 @@
     function getRandomInt(min, max) {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
+
+    // watch time ticker
+    var timer = setInterval(tick, 10);
+
+    function tick() {
+        timeElapsed += 0.01;
+        
+
+        $(".playerStats").text(timeElapsed.toFixed(2) +" seconds");
+        
+        
+    }
+
+
+
