@@ -12,6 +12,7 @@
     var renderer = new PIXI.WebGLRenderer(view.width, view.height);
 
 
+    var cpuObjects = {};
 
 
     $(".canvasArea").append(renderer.view);
@@ -39,8 +40,8 @@
 
     function animate() {
 
-        player.position.x += playerDX;
-        player.position.y += playerDY;
+        // player.position.x += playerDX;
+        // player.position.y += playerDY;
 
 
 
@@ -49,25 +50,30 @@
 
         // bounce off the walls
         if (player.position.x < 0) {
-
             playerDX *= -1; 
 
         } else if (player.position.x > view.width) {
             playerDX *= -1;
    
-
         } else if (player.position.y < 0) {
-     
             playerDY *= -1;
 
         } else if (player.position.y > view.height) {
-         
             playerDY *= -1;
         }
 
         renderer.render(stage);
 
         requestAnimationFrame(animate);
+    }
+
+
+
+    // handle mouse movement and other control data
+    stage.mousemove = function(mouseData) {
+        var localCoordsPosition = mouseData.getLocalPosition(stage);
+
+        player.position = localCoordsPosition;
     }
 
 
