@@ -19,14 +19,14 @@
 
     var stage = new PIXI.Stage(0xFFFFFF);
 
-    var playerTexture = PIXI.Texture.fromImage("images/bunny.png");
+    var playerTexture = PIXI.Texture.fromImage("images/player.png");
     var player = new PIXI.Sprite(playerTexture);
 
 
     player.position = screenCenter;
 
-    player.scale.x = 1;
-    player.scale.y = 1;
+    player.scale.x = 0.05;
+    player.scale.y = 0.05;
 
     player.anchor.x = 0.5;
     player.anchor.y = 0.5;
@@ -38,12 +38,18 @@
 
 
     // create the CPU-generated objects to avoid
-    createCPUObjects(20);
+    createCPUObjects(10);
+    // createCPUObjects(1);
 
     function animate() {
 
+
+
+
+        // add game logic and movement for cpu objects
         for (var keys in cpuObjects) {
 
+            collisionHandle(player, cpuObjects[keys].sprite);
 
             var tmpSprite = cpuObjects[keys].sprite;
 
@@ -95,7 +101,7 @@
         for (var i = 0; i < n; i++) {
             var id = guid();
 
-            var tmpTexture = PIXI.Texture.fromImage("images/bunny.png");
+            var tmpTexture = PIXI.Texture.fromImage("images/cpu.png");
             var tmp = new PIXI.Sprite(tmpTexture);
 
 
@@ -103,8 +109,8 @@
             tmp.position.x = getRandomInt(2, view.width - 2);
             tmp.position.y = getRandomInt(2, view.height - 2);
 
-            tmp.scale.x = 1;
-            tmp.scale.y = 1;
+            tmp.scale.x = 0.05;
+            tmp.scale.y = 0.05;
 
             tmp.anchor.x = 0.5;
             tmp.anchor.y = 0.5;
@@ -118,6 +124,19 @@
             stage.addChild(tmp);
          
         }
+    }
+
+
+    function collisionHandle(sprite1, sprite2) {
+        var r1 = (sprite1.height * Math.sqrt(2))/2;
+        var r2 = (sprite2.height * Math.sqrt(2))/2;
+
+        var distance = Math.sqrt((sprite2.position.x - sprite1.position.x)*(sprite2.position.x - sprite1.position.x) + (sprite2.position.y - sprite1.position.y)*(sprite2.position.y - sprite1.position.y));
+
+        if (distance < r1 + r2) {
+            $(".playerStats").text("You got hit!");
+        }
+
     }
 
 
