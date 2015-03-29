@@ -12,7 +12,10 @@
     var renderer = new PIXI.WebGLRenderer(view.width, view.height);
 
 
+
     var cpuObjects = {};
+
+    var sessionID = guid(); // session ID for generating CPU objects
 
 
     $(".canvasArea").append(renderer.view);
@@ -21,7 +24,6 @@
 
     var playerTexture = PIXI.Texture.fromImage("images/player.png");
     var player = new PIXI.Sprite(playerTexture);
-
 
     player.position = screenCenter;
 
@@ -38,7 +40,7 @@
     var timeElapsed = 0;
 
     // create the CPU-generated objects to avoid
-    createCPUObjects(10);
+    // createCPUObjects(100);
     // createCPUObjects(1);
 
     function animate() {
@@ -98,16 +100,33 @@
 
 
     function createCPUObjects(n) {
+        var numCPU = 0;
+        
+
+        for (var keys in cpuObjects) {
+            numCPU++;
+        }
+
         for (var i = 0; i < n; i++) {
-            var id = guid();
+            var iNum = numCPU + i;
+            // console.log(iNum);
+            var id = sessionID + iNum.toString();
 
             var tmpTexture = PIXI.Texture.fromImage("images/cpu.png");
             var tmp = new PIXI.Sprite(tmpTexture);
 
+            // if (numCPU == 0) {
+                tmp.position.x = getRandomInt(2, view.width - 2);
+                tmp.position.y = getRandomInt(2, view.height - 2);
+            // } else {
+            //     // console.log(cpuObjects[sessionID + (iNum - 1).toString()].sprite.position);
+            //     var tmpPos = cpuObjects[sessionID + (iNum - 1).toString()].sprite.position;
+            //     tmp.position = tmpPos;
+            // }
 
 
-            tmp.position.x = getRandomInt(2, view.width - 2);
-            tmp.position.y = getRandomInt(2, view.height - 2);
+           // tmp.position.x = getRandomInt(2, view.width - 2);
+           // tmp.position.y = getRandomInt(2, view.height - 2);
 
             tmp.scale.x = 0.05;
             tmp.scale.y = 0.05;
@@ -117,8 +136,8 @@
 
             cpuObjects[id] = {
                 'sprite': tmp,
-                'dx': getRandomInt(1, 10),
-                'dy': getRandomInt(1, 10)
+                'dx': getRandomInt(1, 6),
+                'dy': getRandomInt(1, 6)
             };
 
             stage.addChild(tmp);
@@ -161,7 +180,7 @@
     }
 
     // watch time ticker
-    var timer = setInterval(tick, 10);
+    var timer = setInterval(tick, 9);
 
     function tick() {
         timeElapsed += 0.01;
@@ -171,6 +190,9 @@
         
         
     }
+
+    // add some difficulty
+    setInterval(function() {createCPUObjects(1); }, 1000);
 
 
 
