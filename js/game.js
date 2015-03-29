@@ -35,32 +35,45 @@
 
     requestAnimationFrame(animate);
 
-    var playerDX = 5;
-    var playerDY = 5;
+
+
+    // create the CPU-generated objects to avoid
+    createCPUObjects(20);
 
     function animate() {
 
-        // player.position.x += playerDX;
-        // player.position.y += playerDY;
+        for (var keys in cpuObjects) {
+
+
+            var tmpSprite = cpuObjects[keys].sprite;
+
+            
+            tmpSprite.position.x += cpuObjects[keys].dx;
+            tmpSprite.position.y += cpuObjects[keys].dy;
 
 
 
-        player.rotation += 0.05;
+
+            tmpSprite.rotation += 0.1;
 
 
-        // bounce off the walls
-        if (player.position.x < 0) {
-            playerDX *= -1; 
+            // bounce off the walls
+            if (tmpSprite.position.x < 0) {
+                cpuObjects[keys].dx *= -1; 
 
-        } else if (player.position.x > view.width) {
-            playerDX *= -1;
-   
-        } else if (player.position.y < 0) {
-            playerDY *= -1;
+            } else if (tmpSprite.position.x > view.width) {
+                cpuObjects[keys].dx *= -1;
+       
+            } else if (tmpSprite.position.y < 0) {
+                cpuObjects[keys].dy *= -1;
 
-        } else if (player.position.y > view.height) {
-            playerDY *= -1;
+            } else if (tmpSprite.position.y > view.height) {
+                cpuObjects[keys].dy *= -1;
+            }
+
         }
+
+
 
         renderer.render(stage);
 
@@ -69,11 +82,42 @@
 
 
 
+
     // handle mouse movement and other control data
     stage.mousemove = function(mouseData) {
         var localCoordsPosition = mouseData.getLocalPosition(stage);
 
         player.position = localCoordsPosition;
+    }
+
+
+    function createCPUObjects(n) {
+        for (var i = 0; i < n; i++) {
+            var id = guid();
+
+            var tmpTexture = PIXI.Texture.fromImage("images/bunny.png");
+            var tmp = new PIXI.Sprite(tmpTexture);
+
+
+
+            tmp.position.x = getRandomInt(2, view.width - 2);
+            tmp.position.y = getRandomInt(2, view.height - 2);
+
+            tmp.scale.x = 1;
+            tmp.scale.y = 1;
+
+            tmp.anchor.x = 0.5;
+            tmp.anchor.y = 0.5;
+
+            cpuObjects[id] = {
+                'sprite': tmp,
+                'dx': getRandomInt(1, 10),
+                'dy': getRandomInt(1, 10)
+            };
+
+            stage.addChild(tmp);
+         
+        }
     }
 
 
@@ -89,3 +133,8 @@
         s4() + '-' + s4() + s4() + s4();
     }
 
+
+    // generate a random number in between a range
+    function getRandomInt(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
