@@ -1,4 +1,3 @@
 Epic Ninja Fury
 ===================
-
-Open source web game.
+Minimalistic HTML5 game written using PixiJS.
